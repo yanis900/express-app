@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub User Info</title>
+  </head>
+  <body>
+    <h1>GitHub User Info</h1>
+    <input type="text" id="username" placeholder="Enter GitHub username" />
+    <button onclick="getUserInfo()">Get User Info</button>
+
+    <div id="user-info"></div>
+    <script>
+      async function getUserInfo() {
+        const username = document.getElementById("username").value;
+
+        const response = await fetch(`/github/${username}`);
+        const data = await response.json();
+        
+        console.log(data);
+        const userInfoDiv = document.getElementById("user-info");
+        userInfoDiv.innerHTML = `
+          <h2>${data.name}</h2>
+          <p><strong>Bio:</strong> ${data.bio}</p>
+          <p><strong>Location:</strong> ${data.location}</p>
+          <p><strong>Public Repos:</strong> ${data.public_repos}</p>
+          <img src="${data.avatar_url}" alt="Avatar" width="150" />
+          `;
+      }
+    </script>
+  </body>
+</html>

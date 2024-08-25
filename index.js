@@ -1,16 +1,28 @@
-const express = require('express');
-const fs = require('node:fs/promises');
-
+const express = require("express");
+const axios = require("axios");
+const path = require("path");
 const app = express();
+const PORT = 3000;
 
-app.get("/", async (req, res) =>{
-    try {
-        res.send(await fs.readFile("./index.html", "utf8", (err, html)) );
-        
-    } catch (error) {
-    res.status(500).send("sorry, out of order");
-    
-}
-  });
+app.use(express.static("public"));
 
-app.listen(3000, () => console.log('App available on port 3000'));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("/github/:username", async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const response = await axios.get(
+      `https://api.github.com/users/${username}`
+    );
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).send("Error fetching data from GitHub");
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
