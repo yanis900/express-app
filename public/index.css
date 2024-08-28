@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Space Grotesk", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+body {
+  border: 2px solid #000;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+#user-info-search,
+#user-info-search :nth-child(n) {
+  padding: 10px;
+}
+#user-info-container {
+  display: none;
+  border-radius: 5px;
+  border: 1px solid gray;
+}
+.user-info-card {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background-color: buttonface;
+}
+.user-info-card > img {
+  border-radius: 50%;
+  border: 1px solid gray;
+}
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

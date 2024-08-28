@@ -3,20 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../index.css" />
     <title>GitHub User Info</title>
   </head>
   <body>
-
-    
-    <main>
-      <h1>GitHub User Info</h1>
-      <input type="text" id="username" placeholder="Enter GitHub username" />
+    <div id="user-info-search">
+      <h1>{ GitHub User Info }</h1>
+      <input
+        type="text"
+        id="username"
+        value="yanis900"
+        placeholder="Enter GitHub username"
+      />
       <button onclick="getUserInfo()">Get User Info</button>
+    </div>
 
-      <div id="user-info"></div>
-    </main>
-
+    <div id="user-info-container"></div>
 
     <script>
       async function getUserInfo() {
@@ -27,13 +35,20 @@
 
         console.log(data);
 
-        userInfoDiv = document.getElementById("user-info");
-        userInfoDiv.innerHTML = `
-          <h2>${data.name}</h2>
-          <p><strong>Bio:</strong> ${data.bio}</p>
-          <p><strong>Public Repos:</strong> ${data.public_repos}</p>
-          <img src="${data.avatar_url}" alt="Avatar" width="150" />
-          `;
+        userInfoContainerDiv = document.getElementById("user-info-container");
+        userInfoContainerDiv.style.display = "flex";
+        userInfoContainerDiv.innerHTML = `
+        <div class="user-info-card">
+            <img src=${data.avatar_url} alt="profile" width="150" />
+            <div class="user-info">
+              <h2>${data.name}</h2>
+              <p><strong>Bio: </strong>${data.bio}</p>
+              <p><strong>Website: </strong><a href=${data.blog
+              }>${data.blog}</a></p>
+              <p><strong>Repos: </strong>${data.public_repos}</p>
+            </div>
+        </div>
+        `;
       }
     </script>
   </body>
