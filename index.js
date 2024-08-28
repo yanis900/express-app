@@ -3,13 +3,12 @@ const serverless = require("serverless-http");
 const axios = require("axios");
 const path = require("path");
 const app = express();
-// const PORT = 3000;
+const PORT = 3000;
 
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  console.log("Hello world!")
-  // res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.get("/github/:username", async (req, res) => {
@@ -25,8 +24,8 @@ app.get("/github/:username", async (req, res) => {
   }
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
 
 module.exports.handler = serverless(app);
