@@ -18,35 +18,51 @@
       <input
         type="text"
         id="username"
-        value="yanis900"
         placeholder="Enter GitHub username"
+        required
       />
-      <button onclick="getUserInfo()">Get User Info</button>
+      <button id="submit" onclick="getUserInfo()">Get User Info</button>
     </div>
 
     <div id="user-info-container"></div>
-
     <script>
+      username.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          document.getElementById("submit").click();
+        }
+      });
+
       async function getUserInfo() {
         const username = document.getElementById("username").value;
 
-        const response = await fetch(`/github/${username}`);
-        const data = await response.json();
+        if (!username) {
+          alert("Please enter a GitHub username");
+          return;
+        }
 
-        console.log(data);
+        const userInfoResponse = await fetch(`/github/${username}`);
+        const userContributionsResponse = await fetch(
+          `/api/contributions/${username}`
+        );
+
+        const userInfo = await userInfoResponse.json();
+        const userContributions = await userContributionsResponse.json();
+        
+        console.log(userInfo);
+        console.log(userContributions);
 
         userInfoContainerDiv = document.getElementById("user-info-container");
         userInfoContainerDiv.style.display = "flex";
         userInfoContainerDiv.innerHTML = `
         <div class="user-info-card">
-            <img src=${data.avatar_url} alt="profile" width="150" />
-            <div class="user-info">
-              <h2>${data.name}</h2>
-              <p><strong>Bio: </strong>${data.bio}</p>
-              <p><strong>Website: </strong><a href=${data.blog
-              }>${data.blog}</a></p>
-              <p><strong>Repos: </strong>${data.public_repos}</p>
-            </div>
+          <img src=${userInfo.avatar_url} alt="profile" width="150" />
+          <div class="user-info">
+            <h2>${userInfo.name}</h2>
+            <p><strong>Bio: </strong>${userInfo.bio}</p>
+            <p><strong>Website: </strong><a href=${userInfo.blog}>${userInfo.blog}</a></p>
+            <p><strong>Repos: </strong>${userInfo.public_repos}</p>
+            <p><strong>Followers: </strong>${userInfo.followers}</p>
+          </div>
         </div>
         `;
       }
