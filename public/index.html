@@ -47,7 +47,7 @@
 
         const userInfo = await userInfoResponse.json();
         const userContributions = await userContributionsResponse.json();
-        
+
         console.log(userInfo);
         console.log(userContributions);
 
@@ -55,16 +55,59 @@
         userInfoContainerDiv.style.display = "flex";
         userInfoContainerDiv.innerHTML = `
         <div class="user-info-card">
-          <img src=${userInfo.avatar_url} alt="profile" width="150" />
-          <div class="user-info">
-            <h2>${userInfo.name}</h2>
-            <p><strong>Bio: </strong>${userInfo.bio}</p>
-            <p><strong>Website: </strong><a href=${userInfo.blog}>${userInfo.blog}</a></p>
-            <p><strong>Repos: </strong>${userInfo.public_repos}</p>
-            <p><strong>Followers: </strong>${userInfo.followers}</p>
-          </div>
+      <div class="info">
+        <img src="${userInfo.avatar_url}" alt="profile" width="150" />
+        <div class="user-info">
+          <h2>${userInfo.name}</h2>
+          <p><strong>Bio: </strong>${userInfo.bio}</p>
+          <p>
+            <strong>Website: </strong
+            ><a href="${userInfo.blog}">${userInfo.blog}</a>
+          </p>
+          <p><strong>Repos: </strong>${userInfo.public_repos}</p>
+          <p><strong>Followers: </strong>${userInfo.followers}</p>
         </div>
+        </div>
+
+        <div id="contributions-container" class="contributions-grid"></div>
+      </div>
+    </div>
         `;
+
+        renderContributions(userContributions);
+      }
+
+      function renderContributions(contributions) {
+        const container = document.getElementById("contributions-container");
+        container.innerHTML = ""; 
+
+        const days = [];
+
+        contributions.weeks.forEach((week) => {
+          week.contributionDays.forEach((day) => {
+            days.push(day);
+          });
+        });
+
+        days.forEach((day, index) => {
+          let level = "level-0";
+          if (day.contributionCount > 0 && day.contributionCount <= 5)
+            level = "level-1";
+          else if (day.contributionCount > 5 && day.contributionCount <= 10)
+            level = "level-2";
+          else if (day.contributionCount > 10 && day.contributionCount <= 20)
+            level = "level-3";
+          else if (day.contributionCount > 20) level = "level-4";
+
+          const dayDiv = document.createElement("div");
+          dayDiv.className = `contribution-day ${level}`;
+          dayDiv.title = `${day.date}: ${day.contributionCount} contributions`;
+
+          dayDiv.style.gridRowStart = day.weekday + 1;
+          dayDiv.style.gridColumnStart = Math.floor(index / 7) + 1;
+
+          container.appendChild(dayDiv);
+        });
       }
     </script>
   </body>
