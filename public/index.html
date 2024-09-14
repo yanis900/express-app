@@ -23,15 +23,21 @@
       />
       <button id="submit" onclick="getUserInfo()">Get User Info</button>
     </div>
-
     <div id="user-info-container"></div>
+    <div id="leaderboard-container">
+      <h1>{ Leaderboard }</h1>
+      <div></div>
+    </div>
     <script>
+      // This functions allows enter to submit the search
       username.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           document.getElementById("submit").click();
         }
       });
 
+      // This function stores the value from the input and fetches the github user info from the API endpoint created in server.js
+      // It also fetches the contribution data from another the API endpoint
       async function getUserInfo() {
         const username = document.getElementById("username").value;
 
@@ -47,14 +53,13 @@
 
         const userInfo = await userInfoResponse.json();
         const userContributions = await userContributionsResponse.json();
+        // console.log(userInfo);
+        // console.log(userContributions);
 
-        console.log(userInfo);
-        console.log(userContributions);
+        url = userInfo.blog;
 
-        url = userInfo.blog
-
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-          url = 'https://' + url
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+          url = "https://" + url;
         }
 
         userInfoContainerDiv = document.getElementById("user-info-container");
@@ -78,11 +83,14 @@
         `;
 
         renderContributions(userContributions);
+        saveToLocalStorage(userInfo, userContributions);
       }
 
       function renderContributions(contributions) {
-        const container = document.getElementById("contributions-container");
-        container.innerHTML = ""; 
+        const contributionsContainer = document.getElementById(
+          "contributions-container"
+        );
+        contributionsContainer.innerHTML = "";
 
         const days = [];
 
@@ -109,9 +117,46 @@
           dayDiv.style.gridRowStart = day.weekday + 1;
           dayDiv.style.gridColumnStart = Math.floor(index / 7) + 1;
 
-          container.appendChild(dayDiv);
+          contributionsContainer.appendChild(dayDiv);
         });
       }
+
+      const saveToLocalStorage = (userInfo, contributions) => {
+        const { avatar_url, name, bio, blog, public_repos, followers } =
+          userInfo;
+
+        let partialUserInfo = {
+          avatar_url,
+          name,
+          bio,
+          blog,
+          public_repos,
+          followers,
+        };
+
+        window.localStorage.setItem(
+          `user: ${partialUserInfo.name}`,
+          JSON.stringify(partialUserInfo)
+        );
+        const localStorageItem = JSON.parse(
+          window.localStorage.getItem(partialUserInfo.name)
+        );
+        // console.log(localStorageItem)
+
+        // This function populates the fetched user data that was saved to local storage and displays the current users
+        // TODO: I need to organise the data in different categories e.g n. followers, total contributions,
+
+        const updateLeaderboard = (partialUserInfo) => {
+          const leaderboardContainer = document.getElementById(
+            "leaderboard-container"
+          );
+          const leaderboardItem = document.createElement("div");
+          leaderboardItem.className = "leaderboard-item";
+          leaderboardItem.innerHTML = `<img src="${partialUserInfo.avatar_url}" alt="profile" width="50" />`;
+          leaderboardContainer.appendChild(leaderboardItem);
+        };
+        updateLeaderboard(partialUserInfo);
+      };
     </script>
   </body>
 </html>
