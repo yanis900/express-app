@@ -9,8 +9,8 @@ body {
   width: 100vw;
   height: 100vh;
   display: flex;
+  gap: 1rem;
   flex-direction: column;
-  justify-content: start;
   align-items: center;
 }
 a {
@@ -32,17 +32,17 @@ a:hover {
 #leaderboard-container {
   position: absolute;
   display: flex;
+  align-items: center;
   flex-direction: column;
   gap: 1rem;
-  right: 0;
-  top: 0;
-  border-radius: 5px;
-  border: 1px solid gray;
+  right: 1rem;
+  top: 1rem;
 }
 .leaderboard-item {
   border: 1px solid gray;
   padding: 1rem;
   display: flex;
+  gap: 1rem;
   align-items: center;
   justify-content: space-between;
   width: 100%;
@@ -52,19 +52,23 @@ a:hover {
 .leaderboard-item > img {
   border: 1px solid gray;
   border-radius: 50%;
-
+}
+.leaderboard-info {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
 }
 .user-info-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 2rem;
+  gap: 1rem;
+  padding: 1rem;
   background-color: buttonface;
 }
 .info {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 1rem;
 }
 .info > img {
   border-radius: 50%;

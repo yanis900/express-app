@@ -13,6 +13,9 @@
     <title>GitHub User Info</title>
   </head>
   <body>
+    <div>
+      <button onclick="clearLocalStorage()">Remove history</button>
+    </div>
     <div id="user-info-search">
       <h1>{ GitHub User Info }</h1>
       <input
@@ -24,9 +27,9 @@
       <button id="submit" onclick="getUserInfo()">Get User Info</button>
     </div>
     <div id="user-info-container"></div>
+
     <div id="leaderboard-container">
       <h1>{ Leaderboard }</h1>
-      <div></div>
     </div>
     <script>
       // This functions allows enter to submit the search
@@ -65,22 +68,22 @@
         userInfoContainerDiv = document.getElementById("user-info-container");
         userInfoContainerDiv.style.display = "flex";
         userInfoContainerDiv.innerHTML = `
-        <div class="user-info-card">
-      <div class="info">
-        <img src="${userInfo.avatar_url}" alt="profile" width="150" />
-        <div class="user-info">
-          <h2>${userInfo.name}</h2>
-          <p><strong>Bio: </strong>${userInfo.bio}</p>
-          <p><strong>Website: </strong><a href="${url}">${userInfo.blog}</a></p>
-          <p><strong>Repos: </strong>${userInfo.public_repos}</p>
-          <p><strong>Followers: </strong>${userInfo.followers}</p>
-        </div>
-        </div>
-        <p><strong>Total Contributions: </strong>${userContributions.totalContributions}</p>
-        <div id="contributions-container" class="contributions-grid"></div>
-      </div>
-    </div>
-        `;
+              <div class="user-info-card">
+            <div class="info">
+              <img src="${userInfo.avatar_url}" alt="profile" width="150" />
+              <div class="user-info">
+                <h2>${userInfo.name}</h2>
+                <p><strong>Bio: </strong>${userInfo.bio}</p>
+                <p><strong>Website: </strong><a href="${url}">${userInfo.blog}</a></p>
+                <p><strong>Repos: </strong>${userInfo.public_repos}</p>
+                <p><strong>Followers: </strong>${userInfo.followers}</p>
+              </div>
+              </div>
+              <p><strong>Contributions: </strong>${userContributions.totalContributions}</p>
+              <div id="contributions-container" class="contributions-grid"></div>
+            </div>
+          </div>
+              `;
 
         renderContributions(userContributions);
         saveToLocalStorage(userInfo, userContributions);
@@ -134,29 +137,48 @@
           followers,
         };
 
-        window.localStorage.setItem(
-          `user: ${partialUserInfo.name}`,
-          JSON.stringify(partialUserInfo)
-        );
-        const localStorageItem = JSON.parse(
-          window.localStorage.getItem(partialUserInfo.name)
-        );
-        // console.log(localStorageItem)
+        let storedUsers =
+          JSON.parse(window.localStorage.getItem("allUsers")) || [];
+
+        // if (Object.keys(storedUsers).name === )
+
+        storedUsers.push(partialUserInfo);
+        window.localStorage.setItem("allUsers", JSON.stringify(storedUsers));
+
+        console.log(storedUsers);
 
         // This function populates the fetched user data that was saved to local storage and displays the current users
         // TODO: I need to organise the data in different categories e.g n. followers, total contributions,
 
-        const updateLeaderboard = (partialUserInfo) => {
+        const updateLeaderboard = () => {
           const leaderboardContainer = document.getElementById(
             "leaderboard-container"
           );
-          const leaderboardItem = document.createElement("div");
-          leaderboardItem.className = "leaderboard-item";
-          leaderboardItem.innerHTML = `<img src="${partialUserInfo.avatar_url}" alt="profile" width="50" />`;
-          leaderboardContainer.appendChild(leaderboardItem);
+          leaderboardContainer.innerHTML = "";
+          const storedUsers =
+            JSON.parse(window.localStorage.getItem("allUsers")) || [];
+
+          storedUsers.forEach((user) => {
+            const leaderboardItem = document.createElement("div");
+            leaderboardItem.className = "leaderboard-item";
+            leaderboardItem.innerHTML = `
+                  <img src="${user.avatar_url}" alt="profile" width="50" />
+                  <div class="leaderboard-info">
+                      <h4>${user.name}</h4>
+                      <p><strong>Followers:</strong> ${user.followers}</p>
+                      <p><strong>Contributions:</strong> not available</p>
+                  </div>`;
+
+            leaderboardContainer.appendChild(leaderboardItem);
+          });
         };
-        updateLeaderboard(partialUserInfo);
+
+        updateLeaderboard(partialUserInfo, contributions);
       };
+
+      const clearLocalStorage = () => {
+        localStorage.clear();
+      }
     </script>
   </body>
 </html>
