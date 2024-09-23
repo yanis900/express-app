@@ -72,21 +72,21 @@
         );
         userInfoContainerDiv.style.display = "flex"; // Make the user info section visible
         userInfoContainerDiv.innerHTML = `
-      <div class="user-info-card">
-        <div class="info">
-          <img src="${userInfo.avatar_url}" alt="profile" width="150" />
-          <div class="user-info">
-            <h2>${userInfo.name}</h2>
-            <p><strong>Bio: </strong>${userInfo.bio}</p>
-            <p><strong>Website: </strong><a href="${url}">${userInfo.blog}</a></p>
-            <p><strong>Repos: </strong>${userInfo.public_repos}</p>
-            <p><strong>Followers: </strong>${userInfo.followers}</p>
+        <div class="user-info-card">
+          <div class="info">
+            <img src="${userInfo.avatar_url}" alt="profile" width="150" />
+            <div class="user-info">
+              <h2>${userInfo.name}</h2>
+              <p><strong>Bio: </strong>${userInfo.bio}</p>
+              <p><strong>Website: </strong><a href="${url}">${userInfo.blog}</a></p>
+              <p><strong>Repos: </strong>${userInfo.public_repos}</p>
+              <p><strong>Followers: </strong>${userInfo.followers}</p>
+            </div>
           </div>
+          <p><strong>Contributions: </strong>${userContributions.totalContributions}</p>
+          <div id="contributions-container" class="contributions-grid"></div>
         </div>
-        <p><strong>Contributions: </strong>${userContributions.totalContributions}</p>
-        <div id="contributions-container" class="contributions-grid"></div>
-      </div>
-    `;
+      `;
 
         // Render the user's contribution graph
         renderContributions(userContributions);
@@ -142,8 +142,8 @@
 
         // Create a simplified object containing key user info
         let partialUserInfo = {
-          avatar_url,
           name,
+          avatar_url,
           bio,
           blog,
           public_repos,
@@ -182,17 +182,22 @@
         const storedUsers =
           JSON.parse(window.localStorage.getItem("allUsers")) || [];
 
+        const topThreeUsers = storedUsers
+          .sort((a, b) => b.totalContributions - a.totalContributions)
+          .slice(0, 3);
+        console.log("Top Three Users", topThreeUsers);
+        console.log("All Users", storedUsers);
         // Create leaderboard entries for each user
-        storedUsers.forEach((user) => {
+        topThreeUsers.forEach((user) => {
           const leaderboardItem = document.createElement("div");
           leaderboardItem.className = "leaderboard-item";
           leaderboardItem.innerHTML = `
-      <img src="${user.avatar_url}" alt="profile" width="50" />
-      <div class="leaderboard-info">
-        <h4>${user.name}</h4>
-        <p><strong>Followers:</strong> ${user.followers}</p>
-        <p><strong>Contributions:</strong> ${user.totalContributions}</p>
-      </div>`;
+        <img src="${user.avatar_url}" alt="profile" width="50" />
+        <div class="leaderboard-info">
+          <h4>${user.name}</h4>
+          <p><strong>Followers:</strong> ${user.followers}</p>
+          <p><strong>Contributions:</strong> ${user.totalContributions}</p>
+        </div>`;
 
           leaderboardItems.appendChild(leaderboardItem);
         });
